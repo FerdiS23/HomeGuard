@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ===== Mode terang ===== -->
+    <color name="hg_bg">#F4F7FB</color>
+    <color name="hg_surface">#FFFFFF</color>
+    <color name="hg_stroke">#E2E8F0</color>
+    <color name="hg_text">#0F172A</color>
+    <color name="hg_text_muted">#5B6677</color>
+
+    <color name="hg_primary">#1D4ED8</color>
+    <color name="hg_on_primary">#FFFFFF</color>
+    <color name="hg_hero_start">#1E40AF</color>
+    <color name="hg_hero_end">#0369A1</color>
+
+    <!-- Status: aman, perhatian, bahaya, informasi -->
+    <color name="hg_ok">#15803D</color>
+    <color name="hg_ok_bg">#DCFCE7</color>
+    <color name="hg_warn">#B45309</color>
+    <color name="hg_warn_bg">#FEF3C7</color>
+    <color name="hg_danger">#B91C1C</color>
+    <color name="hg_danger_bg">#FEE2E2</color>
+    <color name="hg_info">#1D4ED8</color>
+    <color name="hg_info_bg">#DBEAFE</color>
+    <color name="hg_neutral_bg">#EEF2F7</color>
+
+    <!-- Kategori perangkat dan sensor -->
+    <color name="hg_orange">#C2410C</color>
+    <color name="hg_orange_bg">#FFEDD5</color>
+    <color name="hg_violet">#6D28D9</color>
+    <color name="hg_violet_bg">#EDE9FE</color>
+    <color name="hg_teal">#0F766E</color>
+    <color name="hg_teal_bg">#CCFBF1</color>
+    <color name="hg_yellow">#A16207</color>
+    <color name="hg_yellow_bg">#FEF9C3</color>
+    <color name="hg_sky">#0369A1</color>
+    <color name="hg_sky_bg">#E0F2FE</color>
+    <color name="hg_rose">#BE185D</color>
+    <color name="hg_rose_bg">#FCE7F3</color>
+
+    <!-- Titik status di atas header berwarna, sama di kedua mode -->
+    <color name="hg_dot_ok">#4ADE80</color>
+    <color name="hg_dot_off">#F87171</color>
+    <color name="hg_dot_wait">#FBBF24</color>
+</resources>

@@ -1,0 +1,14 @@
+<resources>
+    <!-- Tema dasar aplikasi (mode gelap). -->
+    <style name="Base.Theme.HomeGuard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/hg_primary</item>
+        <item name="colorOnPrimary">@color/hg_on_primary</item>
+        <item name="colorSurface">@color/hg_surface</item>
+        <item name="colorOnSurface">@color/hg_text</item>
+        <item name="colorOnSurfaceVariant">@color/hg_text_muted</item>
+        <item name="colorSurfaceContainer">@color/hg_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/hg_surface</item>
+        <item name="android:windowBackground">@color/hg_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
