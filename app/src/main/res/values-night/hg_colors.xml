@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ===== Mode gelap ===== -->
-    <color name="hg_bg">#0B1220</color>
-    <color name="hg_surface">#131C2E</color>
-    <color name="hg_stroke">#24324A</color>
-    <color name="hg_text">#E6EBF5</color>
-    <color name="hg_text_muted">#9AA7BD</color>
+    <!-- ===== Mode gelap: cokelat gelap hangat, sekeluarga dengan krem ===== -->
+    <color name="hg_bg">#17130D</color>
+    <color name="hg_surface">#211B13</color>
+    <color name="hg_stroke">#3A3024</color>
+    <color name="hg_text">#F2E9DA</color>
+    <color name="hg_text_muted">#B0A390</color>
 
-    <color name="hg_primary">#8AB4FF</color>
-    <color name="hg_on_primary">#0B1B3F</color>
-    <color name="hg_hero_start">#172554</color>
-    <color name="hg_hero_end">#0C4A6E</color>
+    <color name="hg_primary">#9DB8E8</color>
+    <color name="hg_on_primary">#12203C</color>
+    <color name="hg_hero_start">#1A2742</color>
+    <color name="hg_hero_end">#1C3A48</color>
 
-    <color name="hg_ok">#4ADE80</color>
-    <color name="hg_ok_bg">#12301F</color>
-    <color name="hg_warn">#FBBF24</color>
-    <color name="hg_warn_bg">#3A2A0B</color>
-    <color name="hg_danger">#F87171</color>
-    <color name="hg_danger_bg">#3F1517</color>
-    <color name="hg_info">#60A5FA</color>
-    <color name="hg_info_bg">#14264A</color>
-    <color name="hg_neutral_bg">#1C2740</color>
+    <color name="hg_ok">#74D08A</color>
+    <color name="hg_ok_bg">#1B2E1D</color>
+    <color name="hg_warn">#F0C05A</color>
+    <color name="hg_warn_bg">#332712</color>
+    <color name="hg_danger">#F08C80</color>
+    <color name="hg_danger_bg">#3A1C18</color>
+    <color name="hg_info">#8FB6EE</color>
+    <color name="hg_info_bg">#1A2742</color>
+    <color name="hg_neutral_bg">#2A2317</color>
 
-    <color name="hg_orange">#FDBA74</color>
-    <color name="hg_orange_bg">#3B2412</color>
-    <color name="hg_violet">#C4B5FD</color>
-    <color name="hg_violet_bg">#2A2150</color>
-    <color name="hg_teal">#5EEAD4</color>
-    <color name="hg_teal_bg">#11302D</color>
-    <color name="hg_yellow">#FDE047</color>
-    <color name="hg_yellow_bg">#3A3208</color>
-    <color name="hg_sky">#7DD3FC</color>
-    <color name="hg_sky_bg">#0C2D45</color>
-    <color name="hg_rose">#F9A8D4</color>
-    <color name="hg_rose_bg">#3D1530</color>
+    <color name="hg_orange">#F0B183</color>
+    <color name="hg_orange_bg">#3A2616</color>
+    <color name="hg_violet">#C3B0EA</color>
+    <color name="hg_violet_bg">#2A2240</color>
+    <color name="hg_teal">#71D9CD</color>
+    <color name="hg_teal_bg">#143029</color>
+    <color name="hg_yellow">#EDD06A</color>
+    <color name="hg_yellow_bg">#332C12</color>
+    <color name="hg_sky">#93C7E6</color>
+    <color name="hg_sky_bg">#162C3A</color>
+    <color name="hg_rose">#EDA3C4</color>
+    <color name="hg_rose_bg">#3A1C2C</color>
 </resources>
