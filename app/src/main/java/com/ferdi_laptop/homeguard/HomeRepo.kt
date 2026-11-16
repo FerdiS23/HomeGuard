@@ -149,13 +149,20 @@ object HomeRepo {
             rumahOffline = false   // data masuk lagi, rumah kembali terhubung
         }
 
-        SampelStore.catat(
-            app,
-            j.optDouble("suhu", Double.NaN),
-            j.optDouble("lembap", Double.NaN),
-            j.optDouble("daya", Double.NaN),
-            j.optDouble("kwh", Double.NaN)
-        )
+        // SampelStore memakai JSONObject yang menolak NaN, jadi nilai yang tidak terbaca diganti 0.
+        // Dibungkus try agar kegagalan pencatatan statistik tidak pernah menghentikan aplikasi.
+        fun aman(x: Double) = if (x.isNaN()) 0.0 else x
+        try {
+            SampelStore.catat(
+                app,
+                aman(j.optDouble("suhu", Double.NaN)),
+                aman(j.optDouble("lembap", Double.NaN)),
+                aman(j.optDouble("daya", Double.NaN)),
+                aman(j.optDouble("kwh", Double.NaN))
+            )
+        } catch (e: Exception) {
+            // abaikan
+        }
         beriTahu()
     }
 

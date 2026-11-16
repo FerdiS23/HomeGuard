@@ -255,9 +255,9 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
 
     // ------------------------------------------------------------ kontrol
     private fun aturKontrol(v: View) {
-        pasangSaklar(switchLampu, "cmd/lampu", "on", "off")
-        pasangSaklar(switchSoket, "cmd/soket", "on", "off")
-        pasangSaklar(switchAc, "cmd/ac", "on", "off")
+        pasangSaklar(switchLampu, "ruangtamu/lampu", "nyala", "mati")
+        pasangSaklar(switchSoket, "ruangtamu/soket", "nyala", "mati")
+        pasangSaklar(switchAc, "ruangtamu/ac", "nyala", "mati")
 
         // Katup gas selalu minta konfirmasi sebelum dibuka
         switchKatup.setOnClickListener {
@@ -308,9 +308,9 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
     }
 
     private fun jalankanSkenario(nama: String, lampu: Boolean, soket: Boolean, ac: Boolean) {
-        kirim("cmd/lampu", if (lampu) "on" else "off")
-        kirim("cmd/soket", if (soket) "on" else "off")
-        kirim("cmd/ac", if (ac) "on" else "off")
+        kirim("ruangtamu/lampu", if (lampu) "nyala" else "mati")
+        kirim("ruangtamu/soket", if (soket) "nyala" else "mati")
+        kirim("ruangtamu/ac", if (ac) "nyala" else "mati")
 
         switchLampu.isChecked = lampu
         switchSoket.isChecked = soket
