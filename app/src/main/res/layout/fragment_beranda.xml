@@ -751,6 +751,244 @@
             android:layout_marginTop="2dp"
             android:text="Ketuk kartu untuk menyalakan atau mematikan" />
 
+        <!-- ================= AC: SAKLAR DAN PENGATUR SUHU ================= -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAc"
+            style="@style/HgCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:contentPadding="18dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Baris judul: ketuk untuk menyalakan atau mematikan -->
+                <LinearLayout
+                    android:id="@+id/barisAc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:id="@+id/wrapAc"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_icon_neutral">
+
+                        <ImageView
+                            android:id="@+id/ivAc"
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_ac"
+                            app:tint="@color/hg_text_muted" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/HgName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AC" />
+
+                        <TextView
+                            android:id="@+id/tvAcStatus"
+                            style="@style/HgLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Mati"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/switchAc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="Saklar AC" />
+                </LinearLayout>
+
+                <!-- Pengatur suhu: kurang, angka, tambah -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btnAcMinus"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_tombol_bulat"
+                        android:contentDescription="Turunkan suhu AC"
+                        android:src="@drawable/ic_ac_turun"
+                        android:padding="16dp"
+                        android:scaleType="fitCenter"
+                        app:tint="@color/hg_sky" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvAcTarget"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:includeFontPadding="false"
+                                android:text="24"
+                                android:textColor="@color/hg_text_muted"
+                                android:textSize="56sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvAcSatuan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginTop="6dp"
+                                android:includeFontPadding="false"
+                                android:text="°C"
+                                android:textColor="@color/hg_text_muted"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <TextView
+                            style="@style/HgLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Suhu yang diatur" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btnAcPlus"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/bg_tombol_bulat"
+                        android:contentDescription="Naikkan suhu AC"
+                        android:src="@drawable/ic_ac_naik"
+                        android:padding="16dp"
+                        android:scaleType="fitCenter"
+                        app:tint="@color/hg_sky" />
+                </LinearLayout>
+
+                <!-- Posisi suhu di antara batas terendah dan tertinggi -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/HgLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="16°"
+                        android:textSize="12sp" />
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/progressAcSuhu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:max="14"
+                        android:progress="8"
+                        app:indicatorColor="@color/hg_sky"
+                        app:trackColor="@color/hg_stroke"
+                        app:trackCornerRadius="3dp"
+                        app:trackThickness="6dp" />
+
+                    <TextView
+                        style="@style/HgLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30°"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Suhu ruangan saat ini, diperbarui tiap data sensor masuk -->
+                <LinearLayout
+                    android:id="@+id/stripAcRuang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/bg_kotak_lembut"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="14dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="14dp"
+                    android:paddingBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_temp"
+                        app:tint="@color/hg_orange" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/HgLabel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Suhu ruangan sekarang"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvAcKeterangan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="1dp"
+                            android:text="Menunggu data suhu ruangan"
+                            android:textColor="@color/hg_text"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAcRuang"
+                        style="@style/HgValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <GridLayout
             android:id="@+id/gridKontrol"
             android:layout_width="match_parent"
@@ -888,74 +1126,6 @@
 
                     <TextView
                         android:id="@+id/tvSoketStatus"
-                        style="@style/HgLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Mati"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardAc"
-                style="@style/HgCard"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_gravity="fill"
-                android:layout_margin="6dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <FrameLayout
-                            android:id="@+id/wrapAc"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_icon_neutral">
-
-                            <ImageView
-                                android:id="@+id/ivAc"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:importantForAccessibility="no"
-                                android:src="@drawable/ic_ac"
-                                app:tint="@color/hg_text_muted" />
-                        </FrameLayout>
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_weight="1" />
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/switchAc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="Saklar AC" />
-                    </LinearLayout>
-
-                    <TextView
-                        style="@style/HgName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="AC" />
-
-                    <TextView
-                        android:id="@+id/tvAcStatus"
                         style="@style/HgLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

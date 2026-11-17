@@ -13,6 +13,11 @@ import org.json.JSONObject
  * tercatat walaupun tidak ada halaman yang sedang menampilkannya.
  */
 object HomeRepo {
+    // Topik perintah AC. Ubah di sini bila topik di ESP32 berbeda.
+    const val TOPIK_AC = "ruangtamu/ac"
+
+    /** Suhu yang diatur untuk AC. Isi pesannya angka bulat derajat Celsius, misalnya 24. */
+    const val TOPIK_AC_SUHU = "ruangtamu/suhu_ac"
 
     /** Kondisi sensor terakhir yang diterima dari rumah. */
     data class Sensor(
@@ -26,6 +31,7 @@ object HomeRepo {
         val lampu: Boolean,
         val soket: Boolean,
         val ac: Boolean,
+        val acSuhu: Int,
         val katup: Boolean,
         val waktu: Long
     )
@@ -141,6 +147,7 @@ object HomeRepo {
             lampu = j.optInt("lampu") == 1,
             soket = j.optInt("soket") == 1,
             ac = j.optInt("ac") == 1,
+            acSuhu = j.optInt("ac_suhu", -1),
             katup = j.optInt("gas_valve") == 1,
             waktu = System.currentTimeMillis()
         )

@@ -24,6 +24,7 @@ object Prefs {
     private const val K_LAYANAN = "layanan_aktif"
     private const val K_NOTIF_PERINGATAN = "notif_peringatan"
     private const val K_AMBANG_OFFLINE = "ambang_offline_detik"
+    private const val K_AC_SUHU = "ac_suhu"
 
     // Nilai bawaan
     const val AMBANG_GAS_BAWAAN = 2000
@@ -31,6 +32,9 @@ object Prefs {
     const val RADIUS_DEKAT_BAWAAN = 1000
     const val TARIF_BAWAAN = 1444.7f
     const val AMBANG_OFFLINE_BAWAAN = 120
+    const val AC_SUHU_MIN = 16
+    const val AC_SUHU_MAKS = 30
+    const val AC_SUHU_BAWAAN = 24
 
     private fun p(ctx: Context) = ctx.applicationContext.getSharedPreferences(NAMA, Context.MODE_PRIVATE)
 
@@ -110,6 +114,15 @@ object Prefs {
 
     fun setNotifPeringatan(ctx: Context, aktif: Boolean) {
         p(ctx).edit().putBoolean(K_NOTIF_PERINGATAN, aktif).apply()
+    }
+
+    // ---------------------------------------------------------- AC
+    /** Suhu AC terakhir yang diatur dari aplikasi, dalam derajat Celsius. */
+    fun acSuhu(ctx: Context): Int =
+        p(ctx).getInt(K_AC_SUHU, AC_SUHU_BAWAAN).coerceIn(AC_SUHU_MIN, AC_SUHU_MAKS)
+
+    fun setAcSuhu(ctx: Context, derajat: Int) {
+        p(ctx).edit().putInt(K_AC_SUHU, derajat.coerceIn(AC_SUHU_MIN, AC_SUHU_MAKS)).apply()
     }
 
     /** Berapa detik tanpa data sampai rumah dianggap tidak terhubung. */

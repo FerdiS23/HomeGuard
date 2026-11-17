@@ -3,11 +3,15 @@ package com.ferdi_laptop.homeguard
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -17,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -100,6 +105,20 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
 
     private var aksiTerakhir = 0L
 
+    // Pengatur suhu AC
+    private lateinit var tvAcTarget: TextView
+    private lateinit var tvAcSatuan: TextView
+    private lateinit var tvAcRuang: TextView
+    private lateinit var tvAcKeterangan: TextView
+    private lateinit var btnAcMinus: ImageButton
+    private lateinit var btnAcPlus: ImageButton
+    private lateinit var progressAcSuhu: LinearProgressIndicator
+    private lateinit var stripAcRuang: View
+    private var acTarget = Prefs.AC_SUHU_BAWAAN
+    private var adaSuhuTertunda = false
+    private val penundaAc = Handler(Looper.getMainLooper())
+    private val kirimSuhuAc = Runnable { kirimTargetAc() }
+
     // Peta lokasi
     private lateinit var petaView: MapView
     private lateinit var tvPetaStatus: TextView
@@ -141,6 +160,11 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
     }
 
     override fun onPause() {
+        // Suhu AC yang belum sempat terkirim dikirim sekarang, jangan sampai hilang
+        if (adaSuhuTertunda) {
+            penundaAc.removeCallbacks(kirimSuhuAc)
+            kirimTargetAc()
+        }
         petaView.onPause()
         HomeRepo.lepas(this)
         super.onPause()
@@ -157,6 +181,7 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
     }
 
     override fun onDestroyView() {
+        penundaAc.removeCallbacks(kirimSuhuAc)
         petaView.onDestroy()
         peta = null
         super.onDestroyView()
@@ -213,8 +238,18 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
         )
         switchAc = ikatKontrol(
             v, R.id.cardAc, R.id.wrapAc, R.id.ivAc, R.id.tvAcStatus,
-            R.id.switchAc, "Menyala", "Mati", R.color.hg_sky, R.color.hg_sky_bg
+            R.id.switchAc, "Menyala", "Mati", R.color.hg_sky, R.color.hg_sky_bg,
+            areaKetukId = R.id.barisAc   // kartu AC berisi tombol, jadi hanya baris judul yang menyalakan
         )
+
+        tvAcTarget = v.findViewById(R.id.tvAcTarget)
+        tvAcSatuan = v.findViewById(R.id.tvAcSatuan)
+        tvAcRuang = v.findViewById(R.id.tvAcRuang)
+        tvAcKeterangan = v.findViewById(R.id.tvAcKeterangan)
+        btnAcMinus = v.findViewById(R.id.btnAcMinus)
+        btnAcPlus = v.findViewById(R.id.btnAcPlus)
+        progressAcSuhu = v.findViewById(R.id.progressAcSuhu)
+        stripAcRuang = v.findViewById(R.id.stripAcRuang)
         switchKatup = ikatKontrol(
             v, R.id.cardKatup, R.id.wrapKatup, R.id.ivKatup, R.id.tvKatupStatus,
             R.id.switchKatup, "Terbuka", "Tertutup", R.color.hg_teal, R.color.hg_teal_bg
@@ -232,11 +267,12 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
 
     private fun ikatKontrol(
         v: View, cardId: Int, wrapId: Int, iconId: Int, statusId: Int, saklarId: Int,
-        teksOn: String, teksOff: String, warnaAktif: Int, warnaLatarAktif: Int
+        teksOn: String, teksOff: String, warnaAktif: Int, warnaLatarAktif: Int,
+        areaKetukId: Int = cardId
     ): SwitchCompat {
         val saklar = v.findViewById<SwitchCompat>(saklarId)
         val card = v.findViewById<MaterialCardView>(cardId)
-        card.setOnClickListener { saklar.performClick() }
+        v.findViewById<View>(areaKetukId).setOnClickListener { saklar.performClick() }
         daftarKontrol.add(
             KontrolUi(
                 card, v.findViewById(wrapId), v.findViewById(iconId), v.findViewById(statusId),
@@ -257,7 +293,18 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
     private fun aturKontrol(v: View) {
         pasangSaklar(switchLampu, "ruangtamu/lampu", "nyala", "mati")
         pasangSaklar(switchSoket, "ruangtamu/soket", "nyala", "mati")
-        pasangSaklar(switchAc, "ruangtamu/ac", "nyala", "mati")
+
+        // AC: saat dinyalakan, suhu yang diatur ikut dikirim agar AC dan aplikasi selaras
+        switchAc.setOnClickListener {
+            if (switchAc.isChecked) {
+                kirim(HomeRepo.TOPIK_AC, "nyala")
+                kirim(HomeRepo.TOPIK_AC_SUHU, acTarget.toString())
+            } else {
+                kirim(HomeRepo.TOPIK_AC, "mati")
+            }
+            perbaruiKontrol()
+        }
+        aturPengaturAc()
 
         // Katup gas selalu minta konfirmasi sebelum dibuka
         switchKatup.setOnClickListener {
@@ -310,7 +357,8 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
     private fun jalankanSkenario(nama: String, lampu: Boolean, soket: Boolean, ac: Boolean) {
         kirim("ruangtamu/lampu", if (lampu) "nyala" else "mati")
         kirim("ruangtamu/soket", if (soket) "nyala" else "mati")
-        kirim("ruangtamu/ac", if (ac) "nyala" else "mati")
+        kirim(HomeRepo.TOPIK_AC, if (ac) "nyala" else "mati")
+        if (ac) kirim(HomeRepo.TOPIK_AC_SUHU, acTarget.toString())
 
         switchLampu.isChecked = lampu
         switchSoket.isChecked = soket
@@ -348,6 +396,71 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
                 k.status.setTextColor(warna(R.color.hg_text_muted))
             }
         }
+        perbaruiAc()
+    }
+
+    // ------------------------------------------------------------ suhu AC
+    private fun aturPengaturAc() {
+        acTarget = Prefs.acSuhu(requireContext())
+        progressAcSuhu.max = Prefs.AC_SUHU_MAKS - Prefs.AC_SUHU_MIN
+        btnAcMinus.setOnClickListener { ubahSuhuAc(-1, it) }
+        btnAcPlus.setOnClickListener { ubahSuhuAc(1, it) }
+    }
+
+    private fun ubahSuhuAc(langkah: Int, tombol: View) {
+        val baru = (acTarget + langkah).coerceIn(Prefs.AC_SUHU_MIN, Prefs.AC_SUHU_MAKS)
+        if (baru == acTarget) return
+
+        acTarget = baru
+        aksiTerakhir = SystemClock.elapsedRealtime()   // tahan data sensor agar tidak menimpa angka ini
+        tombol.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        perbaruiAc()
+
+        // Dikirim setelah jari berhenti menekan, supaya ketukan beruntun tidak membanjiri ESP32
+        adaSuhuTertunda = true
+        penundaAc.removeCallbacks(kirimSuhuAc)
+        penundaAc.postDelayed(kirimSuhuAc, JEDA_KIRIM_SUHU_MS)
+    }
+
+    private fun kirimTargetAc() {
+        adaSuhuTertunda = false
+        context?.let { Prefs.setAcSuhu(it, acTarget) }
+        kirim(HomeRepo.TOPIK_AC_SUHU, acTarget.toString())
+    }
+
+    /** Menyelaraskan angka, tombol, garis rentang, dan suhu ruangan pada kartu AC. */
+    private fun perbaruiAc() {
+        val nyala = switchAc.isChecked
+        val suhuRuang = HomeRepo.sensor?.suhu ?: Double.NaN
+
+        tvAcTarget.text = acTarget.toString()
+        progressAcSuhu.setProgressCompat(acTarget - Prefs.AC_SUHU_MIN, true)
+
+        val warnaAngka = warna(if (nyala) R.color.hg_sky else R.color.hg_text_muted)
+        tvAcTarget.setTextColor(warnaAngka)
+        tvAcSatuan.setTextColor(warnaAngka)
+        progressAcSuhu.setIndicatorColor(warnaAngka)
+
+        // Tombol hanya aktif saat AC menyala dan belum menyentuh batas
+        aturTombolAc(btnAcMinus, nyala && acTarget > Prefs.AC_SUHU_MIN)
+        aturTombolAc(btnAcPlus, nyala && acTarget < Prefs.AC_SUHU_MAKS)
+
+        stripAcRuang.backgroundTintList =
+            if (nyala) ColorStateList.valueOf(warna(R.color.hg_surface)) else null
+
+        tvAcRuang.text = angka(suhuRuang, "%.1f °C")
+        tvAcKeterangan.text = when {
+            suhuRuang.isNaN() -> "Menunggu data suhu ruangan"
+            HomeRepo.rumahOffline -> "Data terhenti, angka mungkin sudah lama"
+            !nyala -> "AC mati"
+            suhuRuang > acTarget + 0.5 -> "Mendinginkan menuju $acTarget °C"
+            else -> "Suhu yang diatur sudah tercapai"
+        }
+    }
+
+    private fun aturTombolAc(tombol: ImageButton, aktif: Boolean) {
+        tombol.isEnabled = aktif
+        tombol.alpha = if (aktif) 1f else 0.35f
     }
 
     // ------------------------------------------------------------ warna
@@ -466,7 +579,11 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
             switchSoket.isChecked = s.soket
             switchAc.isChecked = s.ac
             switchKatup.isChecked = s.katup
+            // Suhu yang dilaporkan ESP32 dipakai bila ada, supaya aplikasi mengikuti keadaan AC sebenarnya
+            if (s.acSuhu in Prefs.AC_SUHU_MIN..Prefs.AC_SUHU_MAKS) acTarget = s.acSuhu
             perbaruiKontrol()
+        } else {
+            perbaruiAc()   // suhu ruangan tetap diperbarui tiap data masuk
         }
     }
 
@@ -616,6 +733,11 @@ class BerandaFragment : Fragment(), HomeRepo.Pendengar {
     }
 
     // ------------------------------------------------------------ bantu
+    private companion object {
+        /** Jeda sebelum suhu AC dikirim, dihitung dari ketukan terakhir. */
+        const val JEDA_KIRIM_SUHU_MS = 600L
+    }
+
     private fun angka(nilai: Double, format: String): String =
         if (nilai.isNaN()) "--" else String.format(Locale.US, format, nilai)
 

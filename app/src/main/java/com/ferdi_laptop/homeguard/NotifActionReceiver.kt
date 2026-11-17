@@ -1,4 +1,4 @@
-package com.ferdi_laptop.homeguard   // sesuaikan dengan package project Anda
+package com.ferdi_laptop.homeguard
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -17,12 +17,18 @@ class NotifActionReceiver : BroadcastReceiver() {
         HomeRepo.siapkan(context)
 
         when (intent.action) {
-            HomeNotifier.ACTION_AC -> MqttManager.publish("cmd/ac", "on")        // target default 24 C di ESP32
-            HomeNotifier.ACTION_LAMPU -> MqttManager.publish("cmd/lampu", "on")
+            HomeNotifier.ACTION_AC -> {
+                // Topik dan isi pesan disamakan dengan saklar AC di Beranda
+                MqttManager.publish(HomeRepo.TOPIK_AC, "nyala")
+                MqttManager.publish(HomeRepo.TOPIK_AC_SUHU, Prefs.acSuhu(context).toString())
+            }
+
+            HomeNotifier.ACTION_LAMPU -> MqttManager.publish("ruangtamu/lampu", "nyala")
         }
 
         NotificationManagerCompat.from(context).cancel(HomeNotifier.NOTIF_ID)
 
+        // Beri waktu beberapa detik agar pesan MQTT sempat terkirim sebelum receiver selesai
         Handler(Looper.getMainLooper()).postDelayed({ pending.finish() }, 6000)
     }
 }
